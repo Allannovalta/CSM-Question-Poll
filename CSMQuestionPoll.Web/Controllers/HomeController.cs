@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CSMQuestionPoll.Web.Models;
 using CSMQuestionPoll.Web.Infrastructure.Data.Helpers;
+using CSMQuestionPoll.Web.ViewModels.Users;
+using CSMQuestionPoll.Web.Infrastructure.Data.Models;
 
 namespace CSMQuestionPoll.Web.Controllers
 {
@@ -18,10 +20,39 @@ namespace CSMQuestionPoll.Web.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int pageSize = 5, int pageIndex = 1, string keyword = "")
         {
-            var users = this._context.Users.ToList();
-            return View();
+            Page<User> result = new Page<User>();
+            if (pageSize < 1)
+            {
+                pageSize = 1;
+            }
+            IQueryable<User> userQuery = (IQueryable<User>)this._context.Users;
+            if (string.IsNullOrEmpty(keyword) == false)
+            {
+                userQuery = userQuery.Where(u => u.FirstName.Contains(keyword)
+                                            || u.LastName.Contains(keyword)
+                                            || u.EmailAddress.Contains(keyword));
+            }
+            long queryCount = userQuery.Count();
+            int pageCount = (int)Math.Ceiling((decimal)(queryCount / pageSize));
+            long mod = (queryCount % pageSize);
+            if (mod > 0)
+            {
+                pageCount = pageCount + 1;
+            }
+            int skip = (int)(pageSize * (pageIndex - 1));
+            List<User> users = userQuery.ToList();
+            result.Items = users.Skip(skip).Take((int)pageSize).ToList();
+            result.PageCount = pageCount;
+            result.PageSize = pageSize;
+            result.QueryCount = queryCount;
+            result.CurrentPage = pageIndex;
+
+            return View(new IndexViewModel()
+            {
+                Users = result
+            });
         }
 
         public IActionResult About()
