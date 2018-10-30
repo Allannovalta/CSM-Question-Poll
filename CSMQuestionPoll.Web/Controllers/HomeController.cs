@@ -8,6 +8,7 @@ using CSMQuestionPoll.Web.Models;
 using CSMQuestionPoll.Web.Infrastructure.Data.Helpers;
 using CSMQuestionPoll.Web.ViewModels.Users;
 using CSMQuestionPoll.Web.Infrastructure.Data.Models;
+using CSMQuestionPoll.Web.Infrastructure.Data.Enums;
 
 namespace CSMQuestionPoll.Web.Controllers
 {
@@ -53,6 +54,54 @@ namespace CSMQuestionPoll.Web.Controllers
             {
                 Users = result
             });
+        }
+
+        [HttpGet, Route("home/create")]
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost, Route("home/create")]
+        public IActionResult Create(CreateUserViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return RedirectToAction("index");
+            if (model.Password != model.ConfirmPassword)
+            {
+                ModelState.AddModelError("", "Password does not match Password Confirmation");
+                return View();
+            }
+            var user = this._context.Users.FirstOrDefault(u => u.EmailAddress.ToLower() == model.EmailAddress.ToLower());
+            if (user == null)
+            {
+                user = new User()
+                {
+                    EmailAddress = model.EmailAddress,
+                    Password = model.Password,
+                    Gender = model.Gender,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                };
+                this._context.Users.Add(user);
+                this._context.SaveChanges();
+            }
+            return RedirectToAction("index");
+        }
+
+        [HttpGet, Route("home/change-status/{status}/{userId}")]
+        public IActionResult ChangeStatus(string status, Guid? userId)
+        {
+            var loginStatus = (LoginStatus)Enum.Parse(typeof(LoginStatus), status, true);
+            var user = this._context.Users.FirstOrDefault(u => u.Id == userId);
+
+            if (user != null)
+            {
+                user.LoginStatus = loginStatus;
+                this._context.Users.Update(user);
+                this._context.SaveChanges();
+            }
+
+            return RedirectToAction("index");
         }
 
         [HttpGet, Route("home/reset-password/{userId}")]

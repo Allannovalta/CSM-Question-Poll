@@ -30,3 +30,4 @@ C:\Users\ALLAN_Novalta\Documents\Projects\CSMQuestionPoll\CSMQuestionPoll.Web\ob
 C:\Users\ALLAN_Novalta\Documents\Projects\CSMQuestionPoll\CSMQuestionPoll.Web\obj\Debug\netcoreapp2.1\CSMQuestionPoll.Web.pdb
 C:\Users\ALLAN_Novalta\Documents\Projects\CSMQuestionPoll\CSMQuestionPoll.Web\obj\Debug\netcoreapp2.1\CSMQuestionPoll.Web.csproj.CopyComplete
 C:\Users\ALLAN_Novalta\Documents\Projects\CSMQuestionPoll\CSMQuestionPoll.Web\obj\Debug\netcoreapp2.1\CSMQuestionPoll.Web.csprojAssemblyReference.cache
+C:\Users\ALLAN_Novalta\Documents\Projects\CSMQuestionPoll\CSMQuestionPoll.Web\obj\Debug\netcoreapp2.1\Razor\Views\Home\Create.g.cshtml.cs
